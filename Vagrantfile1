@@ -31,7 +31,6 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "C:\\projects", "/projects"
   config.vm.synced_folder "C:\\Users\\#{ENV['windows_username']}\\.gitconfig", "/home/vagrant/.gitconfig"
   config.vm.synced_folder "C:\\Users\\#{ENV['windows_username']}\\.ssh", "/home/vagrant/.ssh"
-  config.vm.synced_folder "C:\\Users\\#{ENV['windows_username']}\\.bash_aliases", "/home/vagrant/.bash_aliases"
 
   # Configure the VM
   config.vm.provider "hyperv" do |hx|
