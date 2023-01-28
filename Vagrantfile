@@ -3,10 +3,10 @@
 
 # Documentations : https://docs.vagrantup.com.
 Vagrant.configure("2") do |config|
-
   # Check here the linux version available : https://vagrantcloud.com/search
   # Linux version to setup
   config.vm.box = "generic/debian11"
+  config.env.enable
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -28,16 +28,24 @@ Vagrant.configure("2") do |config|
   # your network.
   # config.vm.network "public_network"
 
-  config.vm.synced_folder "C:\\projects", "/projects"
-  config.vm.synced_folder "C:\\Users\\#{ENV['windows_username']}\\.gitconfig", "/home/vagrant/.gitconfig"
-  config.vm.synced_folder "C:\\Users\\#{ENV['windows_username']}\\.ssh", "/home/vagrant/.ssh"
-  config.vm.synced_folder "C:\\Users\\#{ENV['windows_username']}\\.bash_aliases", "/home/vagrant/.bash_aliases"
+  # WINDOWS_USERNAME = ENV['WINDOWS_USERNAME']
+  config.vm.synced_folder "C:\\projects", "/home/vagrant/projects", type: "smb", smb_username: "#{ENV['WINDOWS_USERNAME']}", smb_password: "#{ENV['WINDOWS_PASSWORD']}"
+
+  # sync debian_user_config folder to vagrant user home
+  config.vm.synced_folder "./debian_user_config", "/home/vagrant", type: "smb", smb_username: "#{ENV['WINDOWS_USERNAME']}", smb_password: "#{ENV['WINDOWS_PASSWORD']}"
+
+  # config.vm.synced_folder "C:\\Users\\#{ENV['WINDOWS_USERNAME']}\\.ssh", "/home/vagrant", type: "smb", smb_username: "#{ENV['WINDOWS_USERNAME']}", smb_password: "#{ENV['WINDOWS_PASSWORD']}"
+
+  # config.vm.synced_folder "C:\\Users\\#{ENV['WINDOWS_USERNAME']}\\", "/home/vagrant", type: "rsync",
+  #   rsync__args: ["-r", "--include=.gitconfig", "--include=.bash_aliases", "--exclude=*"],
+  #   rsync__auto: true
+
 
   # Configure the VM
-  config.vm.provider "hyperv" do |hx|
-    hx.enable_virtualization_extensions = true
-    hx.vmname = "setup-dev-linux"
-    hx.vm_integration_services = {
+  config.vm.provider "hyperv" do |hv|
+    hv.enable_virtualization_extensions = true
+    hv.vmname = "setup-dev-linux"
+    hv.vm_integration_services = {
       guest_service_interface: true,
       heartbeat: true,
       key_value_pair_exchange: true,
@@ -45,10 +53,10 @@ Vagrant.configure("2") do |config|
       time_synchronization: true,
       vss: true
     }
-    hx.linked_clone = true
-    hx.cpus = 4
-    hx.maxmemory = 4096
-    hx.memory = 4096
+    hv.linked_clone = true
+    hv.cpus = 4
+    hv.maxmemory = 4096
+    hv.memory = 4096
   end
 
   # Provisioning script to install linux packages

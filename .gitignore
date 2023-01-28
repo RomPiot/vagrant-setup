@@ -1,2 +1,17 @@
-.vagrant/
+# IDE files
+.idea
+.vscode
+
+# Environment
 .env
+
+# Vagrant files
+.vagrant/
+
+# Vagrant config
+debian_user_config/.ssh/*
+debian_user_config/.step
+debian_user_config/.bash_history
+!debian_user_config/.ssh/.gitkeep
+!debian_user_config/.ssh/autorized_keys/.gitkeep
+debian_user_config/.gitconfig
